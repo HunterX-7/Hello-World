@@ -1,19 +1,24 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const getGreeting = createAsyncThunk('getGreeting', async() => {
-    const API_URL = 'http://localhost:3000/api/messages';
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    return [data.greeting];
-})
+import React from 'react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { getGreeting } from '../redux/greetingReducer';
 
-const greetingReducer = (state = [], action) => {
-    switch(action.type) {
-        case 'getGreeting/fulfilled':
-            return action.payload;
-        default:
-            return state;
-    }
-}
+const Greeting = () => {
+  const greet = useSelector((state) => state.greetings);
+  const dispatch = useDispatch();
 
-export default greetingReducer;
+  useEffect(() => {
+    dispatch(getGreeting());
+  }, [dispatch]);
+  
+  return (
+  <>
+    <h1 style={{textAlign: 'center'}}>Random Greeting Generator: </h1>
+    <h2 style={{textAlign: 'center', fontWeight: 'bold'}}>{greet}</h2>
+  </>
+  );
+};
+
+export default Greeting;
